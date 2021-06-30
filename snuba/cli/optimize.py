@@ -20,6 +20,18 @@ from snuba.environment import setup_logging, setup_sentry
     help="Clickhouse native port to write to.",
 )
 @click.option(
+    "--clickhouse-secure",
+    type=bool,
+    default=False,
+    help="If true, an encrypted connection will be used",
+)
+@click.option(
+    "--clickhouse-ca-certs",
+    type=str,
+    default=None,
+    help="An optional path to certificates directory.",
+)
+@click.option(
     "--storage",
     "storage_name",
     type=click.Choice(["errors", "errors_v2"]),
@@ -37,6 +49,8 @@ def optimize(
     *,
     clickhouse_host: Optional[str],
     clickhouse_port: Optional[int],
+    clickhouse_secure: bool,
+    clickhouse_ca_certs: Optional[str],
     storage_name: str,
     parallel: int,
     log_level: Optional[str] = None,
@@ -72,6 +86,8 @@ def optimize(
             clickhouse_user,
             clickhouse_password,
             database,
+            clickhouse_secure,
+            clickhouse_ca_certs,
             send_receive_timeout=ClickhouseClientSettings.OPTIMIZE.value.timeout,
         )
     elif not storage.get_cluster().is_single_node():

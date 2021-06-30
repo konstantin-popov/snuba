@@ -19,6 +19,18 @@ from snuba.environment import setup_logging, setup_sentry
     help="Clickhouse native port to write to.",
 )
 @click.option(
+    "--clickhouse-secure",
+    type=bool,
+    default=False,
+    help="If true, an encrypted connection will be used",
+)
+@click.option(
+    "--clickhouse-ca-certs",
+    type=str,
+    default=None,
+    help="An optional path to certificates directory.",
+)
+@click.option(
     "--dry-run",
     type=bool,
     default=True,
@@ -36,6 +48,8 @@ def cleanup(
     *,
     clickhouse_host: Optional[str],
     clickhouse_port: Optional[int],
+    clickhouse_secure: bool,
+    clickhouse_ca_certs: Optional[str],
     dry_run: bool,
     storage_name: str,
     log_level: Optional[str] = None,
@@ -67,6 +81,8 @@ def cleanup(
             clickhouse_user,
             clickhouse_password,
             database,
+            clickhouse_secure,
+            clickhouse_ca_certs,
         )
     elif not cluster.is_single_node():
         raise click.ClickException("Provide ClickHouse host and port for cleanup")
