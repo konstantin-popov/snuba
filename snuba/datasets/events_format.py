@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import (
     Any,
     Callable,
@@ -115,7 +115,7 @@ def enforce_retention(message: Mapping[str, Any], timestamp: Optional[datetime])
     # processing triggers are based off of Snuba. Or this branch could be put
     # behind a "backfill-only" optional switch.
     if settings.DISCARD_OLD_EVENTS and timestamp < (
-        datetime.utcnow() - timedelta(days=retention_days)
+        datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(days=retention_days)
     ):
         raise EventTooOld
     return retention_days

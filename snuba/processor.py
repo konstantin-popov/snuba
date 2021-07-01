@@ -1,7 +1,7 @@
 import ipaddress
 import re
 from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from hashlib import md5
 from typing import (
     Any,
@@ -148,7 +148,7 @@ def _hashify(h: str) -> str:
     return md5(force_bytes(h)).hexdigest()
 
 
-epoch = datetime(1970, 1, 1)
+epoch = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
 
 def _ensure_valid_date(dt: Optional[datetime]) -> Optional[datetime]:
